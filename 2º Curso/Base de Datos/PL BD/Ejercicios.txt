@@ -1,0 +1,100 @@
+--Ejercicio 1
+create or replace function facturacion(f_tf_origen MF.LLAMADA.TF_ORIGEN%TYPE ,f_año integer) return float is
+importe number(10, 2);
+FacturacionBaja exception;
+begin
+select SUM( LL.DURACION/ 60*T.COSTE) INTO importe FROM MF.TARIFA T INNER JOIN MF.TELEFONO TF USING (tarifa, compañia)
+            INNER JOIN MF.LLAMADA LL ON LL.TF_ORIGEN = TF.NUMERO
+WHERE EXTRACT(year from LL.FECHA_HORA)=f_año AND LL.TF_ORIGEN = f_tf_origen
+GROUP BY f_tf_origen;
+IF importe < 1 THEN 
+  RAISE FacturacionBaja;
+  END IF;
+  RETURN importe;
+exception
+WHEN FacturacionBaja then
+dbms_output.put_line('Facturacion demasiado baja');
+return -1;
+WHEN NO_DATA_FOUND THEN
+dbms_output.put_line('No se ha encontrado ningun telefono que haya realizado ese telefono o no existe');
+return -1;
+WHEN others THEN
+dbms_output.put_line('Ha ocurrido un error');
+return -1;
+END;
+EJERCICIO 2:
+create or replace procedure llamadafacturacion(p_año integer) is
+cursor c_telefono (p_año integer) is 
+select distinct tf_origen from LLAMADA 
+where extract(year from fecha_hora) =p_año;
+BEGIN
+ dbms_output.put_line('N telefono' || ' ' || 'Importe (en €)');
+ dbms_output.put_line('---------------------');
+ for r_telefono in c_telefono(p_año) loop
+    dbms_output.put_line(r_telefono.tf_origen || ' ' || facturacion(r_telefono.tf_origen, p_año)); 
+  end loop;
+EXCEPTION
+WHEN OTHERS THEN 
+ dbms_output.put_line(' Ha ocurrido un error');
+ end;
+EJERCICIO 3:
+create or replace
+procedure llamadas_cia(cia COMPAÑIA.nombre %type, fecha date) is
+
+  existe_fecha integer;
+  porcentaje number(5, 2);
+  num_LL_100 integer;
+  num_LL_Total integer;
+  num_Total integer;
+  no_existe_fecha exception;
+  cursor c_telefonos_cia is
+    select numero
+    from COMPAÑIA C INNER JOIN TELEFONO T ON C.cif=T.compañia
+    where C.nombre = cia;
+  cursor c_llamadas_tf(tlf LLAMADA.tf_origen%type) is
+    select duracion
+    from LLAMADA L
+    where to_char(fecha_hora, 'dd/mm/yy') = fecha and tf_origen=tlf;
+begin
+    select count (*) into existe_fecha
+    from LLAMADA
+    where to_char( fecha_hora, 'dd/mm/yy') = fecha;
+    
+    if existe_fecha= 0 then
+        raise no_existe_fecha;
+    end if;
+    
+    
+    dbms_output.put_line('');
+    dbms_output.put_line('Llamadas realizadas por los telefonos de la compañia ' || cia);
+    dbms_output.put_line('---------------------------------------------');
+    dbms_output.put_line('Tlf. Origen NUM_LL NUM_LL_100 %');
+    dbms_output.put_line('---------------------------------------------');
+    
+    num_total:=0;
+    
+    for v_telefonos in c_telefonos_cia loop
+        num_LL_100:=0;
+        num_LL_Total:=0;
+        for v_llamadas in c_llamadas_tf(v_telefonos.numero) loop 
+            if v_llamadas.duracion > 100 then 
+                num_LL_100 := num_LL_100 +1;
+            end if;
+            num_ll_Total:= num_LL_100 +1;
+        end loop;
+        num_Total:= num_Total + num_LL_Total;
+        
+        if num_LL_100 <> 0 then
+            porcentaje := (num_LL_100/num_LL_Total)*100;
+        else
+            porcentaje := 0;
+        end if;
+        
+         dbms_output.put_line(v_telefonos.numero || '      ' || num_ll_Total ||'           '||
+                              num_ll_100 || '         ' || porcentaje || '%');
+    end loop;
+    dbms_output.put_line('Numero Total de LLamadas: ' || num_Total);
+exception
+    when no_existe_fecha then 
+         dbms_output.put_line('No hay llamadas en la fecha ' || fecha || 'En la BD');
+end;
