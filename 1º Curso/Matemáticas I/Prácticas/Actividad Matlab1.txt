@@ -1,0 +1,143 @@
+syms x
+syms a
+f(x)= a+cos(2*sqrt(x+a))
+ 
+f(x) =
+ 
+a + cos(2*(a + x)^(1/2))
+ 
+int(f,2,4)
+ 
+ans =
+ 
+piecewise(in(a, 'real'), 2*a - sin(2*(a + 2)^(1/2))*(a + 2)^(1/2) + sin(2*(a + 4)^(1/2))*(a + 4)^(1/2) - cos((a + 2)^(1/2))^2 + cos((a + 4)^(1/2))^2, ~in(a, 'real'), int(a + cos(2*(x + a)^(1/2)), x, 2, 4))
+ 
+clear all
+syms x
+g(x)=1+cos(2*sqrt(x+1))
+ 
+g(x) =
+ 
+cos(2*(x + 1)^(1/2)) + 1
+ 
+
+
+
+f(x)=int(g,2,4)
+ 
+f(x) =
+ 
+sin(3^(1/2))^2 - sin(5^(1/2))^2 - 3^(1/2)*sin(2*3^(1/2)) + 5^(1/2)*sin(2*5^(1/2)) + 2
+ 
+trap(g,2,4,8)
+El valor aproximado de la integral es  
+s(x) =
+ 
+0.7336814469
+ 
+ 
+ans(x) =
+ 
+0.7336814469
+ 
+int(0.7336814469,2,4)
+{Check for incorrect argument data type or
+missing argument in call to function
+'int'.
+} 
+h(x)=0.7336814469*1
+{Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('sym/subsindex', '/Applications/MATLAB_R2021b.app/toolbox/symbolic/symbolic/@sym/sym.m', 953)" style="font-weight:bold">sym/subsindex</a> (<a href="matlab: opentoline('/Applications/MATLAB_R2021b.app/toolbox/symbolic/symbolic/@sym/sym.m',953,0)">line 953</a>)
+Invalid indexing or function definition.
+Indexing must follow MATLAB indexing.
+Function arguments must be symbolic
+variables, and function body must be sym
+expression.
+} 
+h(x)=0.7336814469
+{Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('sym/subsindex', '/Applications/MATLAB_R2021b.app/toolbox/symbolic/symbolic/@sym/sym.m', 953)" style="font-weight:bold">sym/subsindex</a> (<a href="matlab: opentoline('/Applications/MATLAB_R2021b.app/toolbox/symbolic/symbolic/@sym/sym.m',953,0)">line 953</a>)
+Invalid indexing or function definition.
+Indexing must follow MATLAB indexing.
+Function arguments must be symbolic
+variables, and function body must be sym
+expression.
+} 
+
+
+
+
+
+
+-----HECHO Y COMPROBADO----
+Warning: the font "Times" is not available, so "Lucida Bright" has been substituted, but may have unexpected appearance or behavor. Re-enable the "Times" font to remove this warning.
+Warning: the font "Times" is not available, so "Lucida Bright" has been substituted, but may have unexpected appearance or behavor. Re-enable the "Times" font to remove this warning.
+>> syms x
+>> g(x)=1+cos(2*sqrt(x+a))
+Unrecognized function or variable 'a'.
+ 
+>> g(x)=1+cos(2*sqrt(x+1))
+ 
+g(x) =
+ 
+cos(2*(x + 1)^(1/2)) + 1
+ 
+>> trap(g,2,4,8)
+El valor aproximado de la integral es  
+s(x) =
+ 
+0.7336814469
+ 
+ 
+ans(x) =
+ 
+0.7336814469
+ 
+>> int(g,2,4)
+ 
+ans =
+ 
+sin(3^(1/2))^2 - sin(5^(1/2))^2 - 3^(1/2)*sin(2*3^(1/2)) + 5^(1/2)*sin(2*5^(1/2)) + 2
+ 
+>> simplify(ans)
+ 
+ans =
+ 
+sin(3^(1/2))^2 - sin(5^(1/2))^2 - 3^(1/2)*sin(2*3^(1/2)) + 5^(1/2)*sin(2*5^(1/2)) + 2
+ 
+>> vpa(ans,5)
+ 
+ans =
+ 
+0.73237
+ 
+
+
+
+
+Warning: the font "Times" is not available, so "Lucida Bright" has been substituted, but may have unexpected appearance or behavor. Re-enable the "Times" font to remove this warning.
+Warning: the font "Times" is not available, so "Lucida Bright" has been substituted, but may have unexpected appearance or behavor. Re-enable the "Times" font to remove this warning.
+>> m=(5-2)/0.1
+
+m =
+
+    30
+
+>> syms x
+>> f=sqrt(8*x+1)
+ 
+f =
+ 
+(8*x + 1)^(1/2)
+ 
+>> simp(f,2,5,m)
+El valor aproximado de la integral  
+s =
+ 
+16.03627484
+ 
+ 
+ans =
+ 
+16.03627484
+ 
+>> 
+
